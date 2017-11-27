@@ -100,7 +100,22 @@ function jumping(){
         }
     }
 
+im.onclick = function moveAnimation(){
 
+            if(myTimer == null){
+
+            myTimer = setInterval(move, 17);
+            walking = true;
+        }else{
+            clearInterval(myTimer)
+            myTimer = null
+            walking = false;
+        }
+
+    }
+
+
+}
 
 </script>
 </head>
