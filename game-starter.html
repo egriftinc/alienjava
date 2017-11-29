@@ -1,127 +1,111 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-	<meta charset="UTF-8">
-
-<script>
-onload=function(){
-var myTimer = null;
-var width = window.innerWidth;
-var step = 0;
-var walking = false;
-var height = 0;
-
-var x = 1;
-var y = 1;
-var img = document.getElementById('x')
-var alien = 108;
-var jumpX = [];
-
-function move(){
-  alien += x;
-  if(alien >= width){
-    x = -x
-  }
-     
-    if(alien <= 108){
-        x = -x
-        alien = 108;
-    }
- if( (width - alien) <= 200 ){
-        jumpbtn.disabled = true;
-      }else{
-        jumpbtn.disabled = false;
-      } 
-   
-    step++;
-    if(step >= 30){
-        step = 0
-    }
-    if(x >= 0){
-    img.style.left = parseInt(img.style.left) + x + 'px'
-    img.src='images/alien/alienrwalk' + step + '.gif'
-}else{
-       img.style.left = parseInt(img.style.left) + x + 'px'
-    img.src='images/alien/alienlwalk' + step + '.gif'
-}
-
-
-
-}
-
-
-function moveNoFeet(){
-    alien += x;
-
-    img.style.left = parseInt(img.style.left) + x + 'px'
-    jumpX.push(x);
-  
-}
-
-function jumping(){
-    var jumpbtn = document.getElementById('jumpbtn');
-    var im = document.getElementById('x');
-            im.style.top = parseInt(im.style.top) - y + 'px';
-    }
-    function dropping(){
-        var im = document.getElementById('x');
-        im.style.top = parseInt(im.style.top) + y + 'px';
-    }
-    var im = document.getElementById('x');
-    jumpbtn.onclick=function(){
-      this.disabled = true;
-      setTimeout(function(){
-        jumpbtn.disabled = false;
-      },2000);
-    
-        if(height == 0){
-           clearInterval(myTimer);
-            myTimer = null;
-          heightTimer = setInterval(function(){
-              height++
-            },100);
-           jumpTimer = setInterval(jumping, 9);
-           noFeetTimer = setInterval(moveNoFeet, 9);
-            setTimeout(function(){
-                clearInterval(jumpTimer);
-              droptimer = setInterval(dropping, 9);
-            },700);
-            setTimeout(function(){
-              clearInterval(droptimer);
-              clearInterval(heightTimer);
-              clearInterval(noFeetTimer);
-              height = 0;
-        if(walking){
-            myTimer = setInterval(move, 17)
-        }else{
-            clearInterval(myTimer)
-            myTimer = null
-        }
-            },1400);
-        }
-    }
-
-im.onclick = function moveAnimation(){
-
-            if(myTimer == null){
-
-            myTimer = setInterval(move, 17);
-            walking = true;
-        }else{
-            clearInterval(myTimer)
-            myTimer = null
-            walking = false;
-        }
-
-    }
-
-
-}
-
-</script>
+<html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jumping Alien Homework by Abe Nito and Jeff Hung</title>
 </head>
 <body>
-	<p align=center><button id=jumpbtn>Jump</button></p>
-	<img src="images/alien/alienrwalk11.gif" id="x" 
-	     style="position:absolute; left:0px; top:200px">
+<script>
+onload=function(){
+    var walkTimer = null;
+    var jumpTimer = null;
+    var counter = 0;
+    var jumpheight = 10;
+    var steps = 0;
+    var x = 1;
+    var winWidth = window.innerWidth;
+    var img = document.getElementById('alien');
+    var button = document.getElementById('jump');
+    var imgY = parseInt(img.style.top);
+    var imgWidth = img.clientWidth;
+    var position = imgWidth;
+    var isJumping = false;
+
+    // make it responsive so the alien only walks within the browser dimensions
+    
+    window.addEventListener('resize', function(){
+        winWidth = window.innerWidth;
+        if (position >= winWidth)
+        {
+            position = winWidth;
+            img.style.left = position - imgWidth + 'px'
+        }
+    }, true);
+
+    // make the alien walk
+
+    function move(){
+
+        steps++
+        if(steps >= 30){
+            steps = 0;
+        }
+        
+        if( x >= 0){ 
+            img.style.left = parseInt(img.style.left) + x + 'px';
+            if (!isJumping)
+            {
+                img.src='images/alien/alienrwalk' + steps + '.gif';
+            }
+        } else {
+            img.style.left = parseInt(img.style.left) + x + 'px';
+            if (!isJumping)
+            {
+                img.src='images/alien/alienlwalk' + steps + '.gif';
+            }
+        }
+     
+        position += x;
+
+        if(position >= winWidth){
+             x = -x;
+        }
+        if(position <= imgWidth){
+            x = -x;
+            position = imgWidth;
+        }
+    }
+
+    // clicking on the alien will make him start/stop walking
+
+    img.onclick=function(){
+        if(walkTimer == null){
+            // set a timer to stop the alien from walking
+            walkTimer = setInterval(move, 20);
+        } else {
+            // stop the timer to get the alien walking again
+            clearInterval(walkTimer)
+            walkTimer = null;
+        }
+    }
+
+    // make the alien jump
+
+        function jump(){
+
+        counter++
+
+        isJumping = true;   
+        if (counter > jumpheight * 2) {
+            counter = 0;
+            isJumping = false;
+            clearInterval(jumpTimer);
+            return;
+        }
+        var jumpval = -Math.pow(counter - jumpheight, 2) + Math.pow(jumpheight, 2);
+        img.style.top = imgY - jumpval + 'px'
+    }
+    button.onclick = function(){
+        if(this.clicked = true && !isJumping) {
+            jumpTimer = setInterval(jump, 50);
+        }
+    }
+}
+</script>
+
+    <p align=center><button id="jump" style="background-color: black; color:white; border:none; font-size: 15px; width: 80px; height: 50px; text-align: center;"><p>Jump</p></button>
+
+    <img src="images/alien/alienrwalk0.gif" id="alien" 
+         style="position:absolute; left:0px; top:200px">
 </body>
 </html>
